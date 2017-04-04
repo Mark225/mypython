@@ -1,5 +1,4 @@
 from tkinter import *
-from tkinter import ttk
 import xlrd
 from PIL import Image,ImageDraw,ImageFont
 import os

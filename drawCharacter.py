@@ -1,28 +1,27 @@
 from PIL import Image,ImageDraw,ImageFont
+from xpinyin import Pinyin
 def drawCharacter(targetList):
-    width = 320
-    height = 480
-    image = Image.new('RGB',(width,height),(255,255,255)) 
+    width = 2126
+    height = 3402
+    image = Image.open('modeltest.jpg') 
     #build font obj
-    font0 = ImageFont.truetype('C:/Windows/Fonts/STXIHEI.TTF',40)
-    font1 = ImageFont.truetype('C:/Windows/Fonts/STXINGKA.TTF',100)
-    font2 = ImageFont.truetype('C:/Windows/Fonts/STKAITI.TTF',50)
+    font0 = ImageFont.truetype('C:/Windows/Fonts/Adobe Caslon Pro/ACaslonPro-Regular.otf',100)
+    font1 = ImageFont.truetype('C:/Windows/Fonts/STXINGKA.TTF',1260)
+    font2 = ImageFont.truetype('C:/Windows/Fonts/STXINWEI.TTF',370)
     #build draw obj
     draw = ImageDraw.Draw(image)
-    #fullpilxr
-    for x in range(width):
-        for y in range(height):
-            draw.point((x,y),fill=(255,255,255))
+    #写入拼音
+    draw.text((0,0),Pinyin().get_pinyin(targetList[1],show_tone_marks=True),font=font0,fill=(0,0,0))
     #写入编号
-    draw.text((0,0),str(int(targetList[0])-1),font=font0,fill=(0,0,0))
+    draw.text((1010,3100),str(int(targetList[0])-1),font=font0,fill=(0,0,0))
     #写入文字
-    draw.text((0,height/6),targetList[1],font=font1,fill=(0,0,0))
+    draw.text((430,271),targetList[1],font=font1,fill=(0,0,0))
     #间隔
-    gapWidth = width/5
-    gapHeight = height/8
+    gapWidth = 378
+    gapHeight = 373
     #初始长宽
-    multiWidth = 0
-    multiHeight = height/2
+    multiWidth = 121
+    multiHeight = 1851
     #写入部首
     for i in range(2,len(targetList)):
         if(targetList[i] != None):            
@@ -30,14 +29,14 @@ def drawCharacter(targetList):
             multiWidth += gapWidth
             if((i-1)%5 == 0):
                multiHeight += gapHeight 
-               multiWidth = 0
+               multiWidth = 121
     #tips
     print("Draw successfully!")
 
-    image.save('character1.jpg', 'jpeg')
+    image.save('characterTest1.jpg', 'jpeg')
 
 def main():
-    targetList = [32.0, '就', '就', '京', '尤', '亠', '口', '小', '尢',]
+    targetList = [56.0, '就', '就', '京', '尤', '亠', '口', '小', '尢',]
     drawCharacter(targetList)
 if __name__=="__main__":
    main()

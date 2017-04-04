@@ -8,7 +8,7 @@ author:MarkYu
 import xlrd
 import re
 from PIL import Image,ImageDraw,ImageFont
-
+from xpinyin import Pinyin
 #打开xlsx文件
 def open_excel(file= 'characterTable.xls'):
    try:
@@ -36,9 +36,10 @@ def drawCharacter():
     width = 320
     height = 480
     #build font obj
-    font0 = ImageFont.truetype('C:/Windows/Fonts/STXIHEI.TTF',40)
-    font1 = ImageFont.truetype('C:/Windows/Fonts/STLITI.TTF',100)
-    font2 = ImageFont.truetype('C:/Windows/Fonts/STKAITI.TTF',60)
+    font0 = ImageFont.truetype('C:/Windows/Fonts/Adobe Caslon Pro/ACaslonPro-Regular.otf',100)
+    font1 = ImageFont.truetype('C:/Windows/Fonts/simsun.ttc',1260)
+    font2 = ImageFont.truetype('C:/Windows/Fonts/simkai.ttf',370)
+    font3 = ImageFont.truetype('C:/Windows/Fonts/STLITI.TTF',150)
     while True:
         image = Image.open('model.jpg') 
         #build draw obj
@@ -47,16 +48,27 @@ def drawCharacter():
         targetList = yield
         if not targetList:
             return
+
         #写入编号
-        draw.text((0,0),str(int(targetList[0])-1),font=font0,fill=(0,0,0))
+        num = int(targetList[0])-1
+        if num < 10: 
+           draw.text((1030,3090),str(int(num)),font=font0,fill=(0,0,0))
+        elif num < 100:
+           draw.text((1010,3090),str(int(num)),font=font0,fill=(0,0,0))
+        elif num < 1000:
+           draw.text((990,3090),str(int(targetList[0])-1),font=font0,fill=(0,0,0))
+        else:
+           draw.text((960,3090),str(int(targetList[0])-1),font=font0,fill=(0,0,0))
         #写入文字
-        draw.text((0,height/6),targetList[1],font=font1,fill=(0,0,0))
+        draw.text((430,271),targetList[1],font=font1,fill=(0,0,0))
+        #写入拼音
+        draw.text((957,60),Pinyin().get_pinyin(targetList[1],show_tone_marks=True),font=font3,fill=(0,0,0))
         #间隔
-        gapWidth = width/5
-        gapHeight = height/8
+        gapWidth = 378
+        gapHeight = 373
         #初始长宽
-        multiWidth = 0
-        multiHeight = height/2
+        multiWidth = 121
+        multiHeight = 1851
         #写入部首
         for i in range(2,len(targetList)):
             if(targetList[i] != None):            
@@ -64,15 +76,18 @@ def drawCharacter():
                 multiWidth += gapWidth
                 if((i-1)%5 == 0):
                    multiHeight += gapHeight 
-                   multiWidth = 0
+                   multiWidth = 121
         #tips
         print('Chatacter{}Draw successfully!'.format(int(targetList[0])-1))
         #保存图片
         image.save('E:/汉字拆分/汉字[{}].jpg'.format(int(targetList[0])-1), 'jpeg')
         r = '200 OK'
 
+def start(file= 'characterTable.xls'):
+   d = drawCharacter()
+   excel_table_byname(d,file)
+
 
 if __name__=="__main__":
-   d = drawCharacter()
-   excel_table_byname(d)
+   start()
     
